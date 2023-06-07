@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TaskManagerApp
+{
+  
+    public class TaskManager
+    {
+        private List<Task> tasks;
+
+        public TaskManager()
+        {
+            tasks = new List<Task>();
+        }
+
+        public void CreateTask(Task task)
+        {
+            task.Id = tasks.Count > 0 ? tasks.Max(t => t.Id) + 1 : 1;
+            tasks.Add(task);
+        }
+
+        public Task GetTaskById(int id)
+        {
+            return tasks.FirstOrDefault(t => t.Id == id);
+        }
+
+        public void UpdateTask(Task updatedTask)
+        {
+            Task existingTask = GetTaskById(updatedTask.Id);
+            if (existingTask != null)
+            {
+                existingTask.Title = updatedTask.Title;
+                existingTask.Description = updatedTask.Description;
+                existingTask.IsCompleted = updatedTask.IsCompleted;
+            }
+        }
+
+        public void DeleteTask(int id)
+        {
+            Task taskToRemove = GetTaskById(id);
+            if (taskToRemove != null)
+            {
+                tasks.Remove(taskToRemove);
+            }
+        }
+
+        public List<Task> GetAllTasks()
+        {
+            return tasks;
+        }
+    }
+
+}
