@@ -1,0 +1,160 @@
+using System;
+using TaskManagerApp;
+
+class Program
+{
+    static TaskManager taskManager = new TaskManager();
+
+    static void Main(string[] args)
+    {
+        bool isRunning = true;
+
+        while (isRunning)
+        {
+            Console.WriteLine("----- Task Manager -----");
+            Console.WriteLine("1. Create Task");
+            Console.WriteLine("2. Update Task");
+            Console.WriteLine("3. Delete Task");
+            Console.WriteLine("4. Mark Task as Completed");
+            Console.WriteLine("5. View All Tasks");
+            Console.WriteLine("6. Exit");
+
+            Console.Write("Enter your choice (1-6): ");
+            string choice = Console.ReadLine();
+
+            Console.WriteLine();
+
+            switch (choice)
+            {
+                case "1":
+                    CreateTask();
+                    break;
+                case "2":
+                    UpdateTask();
+                    break;
+                case "3":
+                    DeleteTask();
+                    break;
+                case "4":
+                    MarkTaskAsCompleted();
+                    break;
+                case "5":
+                    ViewAllTasks();
+                    break;
+                case "6":
+                    isRunning = false;
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    break;
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    static void CreateTask()
+    {
+        TaskManagerApp.Task task = new TaskManagerApp.Task();
+
+        Console.Write("Enter task title: ");
+        task.Title = Console.ReadLine();
+
+        Console.Write("Enter task description: ");
+        task.Description = Console.ReadLine();
+
+        taskManager.CreateTask(task);
+
+        Console.WriteLine("Task created successfully.");
+    }
+
+    static void UpdateTask()
+    {
+        Console.Write("Enter task ID to update: ");
+        if (int.TryParse(Console.ReadLine(), out int taskId))
+        {
+            TaskManagerApp.Task task = taskManager.GetTaskById(taskId);
+
+            if (task != null)
+            {
+                Console.Write("Enter new task title: ");
+                task.Title = Console.ReadLine();
+
+                Console.Write("Enter new task description: ");
+                task.Description = Console.ReadLine();
+
+                taskManager.UpdateTask(task);
+
+                Console.WriteLine("Task updated successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Task not found.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid task ID. Please try again.");
+        }
+    }
+
+    static void DeleteTask()
+    {
+        Console.Write("Enter task ID to delete: ");
+        if (int.TryParse(Console.ReadLine(), out int taskId))
+        {
+            taskManager.DeleteTask(taskId);
+            Console.WriteLine("Task deleted successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Invalid task ID. Please try again.");
+        }
+    }
+
+    static void MarkTaskAsCompleted()
+    {
+        Console.Write("Enter task ID to mark as completed: ");
+        if (int.TryParse(Console.ReadLine(), out int taskId))
+        {
+            TaskManagerApp.Task task = taskManager.GetTaskById(taskId);
+
+            if (task != null)
+            {
+                task.IsCompleted = true;
+                Console.WriteLine("Task marked as completed.");
+            }
+            else
+            {
+                Console.WriteLine("Task not found.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid task ID. Please try again.");
+        }
+    }
+
+    static void ViewAllTasks()
+    {
+        List<TaskManagerApp.Task> tasks = taskManager.GetAllTasks();
+
+        if (tasks.Count > 0)
+        {
+            Console.WriteLine("----- All Tasks -----");
+
+            foreach (TaskManagerApp.Task task in tasks)
+            {
+                Console.WriteLine($"ID: {task.Id}");
+                Console.WriteLine($"Title: {task.Title}");
+                Console.WriteLine($"Description: {task.Description}");
+                Console.WriteLine($"Completed: {(task.IsCompleted ? "Yes" : "No")}");
+                Console.WriteLine();
+            }
+        }
+        else
+        {
+            Console.WriteLine("No tasks found.");
+        }
+    }
+}
